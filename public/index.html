@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meeting Room Booking</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+      <section class="form-card" style="width: 100%; max-width: 400px;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h1 style="font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+            J.Leo Architecture
+          </h1>
+          <p class="muted">Meeting Room Booking App</p>
+          <p class="muted">Premium Meeting Room Access</p>
+        </div>
+
+        <form id="login-form">
+          <div class="input">
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" placeholder="name@example.com" required />
+          </div>
+          <div class="input">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="••••••••" required />
+          </div>
+          <button class="button primary" type="submit" style="width: 100%;">Sign in to Workspace</button>
+          <p id="login-error" class="notice" style="text-align: center;"></p>
+        </form>
+
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--surface-border); text-align: center;">
+          <span class="muted" style="font-size: 0.9rem;">New to the team?</span>
+          <br /><br />
+          <a href="/signup.html" class="button ghost" style="width: 100%;">Request Access</a>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/login.js"></script>
+  </body>
+</html>

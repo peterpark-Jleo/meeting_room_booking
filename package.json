@@ -1,0 +1,22 @@
+{
+  "name": "meeting-room-booking",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "migrate": "node server/migrate.js",
+    "seed:admin": "node server/seed-admin.js",
+    "seed:user": "node server/seed-user.js",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "luxon": "^3.5.0",
+    "pg": "^8.12.0"
+  }
+}

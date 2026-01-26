@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Bookings · Meeting Room Booking</title>
+  <link rel="stylesheet" href="/styles.css?v=3" />
+</head>
+
+<body>
+  <main class="app-shell">
+    <nav class="nav">
+      <strong>J.Leo Architecture · Meeting Room Booking App</strong>
+      <div class="nav-links">
+        <a href="/app.html">Dashboard</a>
+        <a href="/reservations.html" class="active">My Bookings</a>
+        <a href="/profile.html">Profile</a>
+        <button class="button ghost" id="logout">Sign out</button>
+      </div>
+    </nav>
+
+    <section class="grid" style="grid-template-columns: 1fr 2fr; align-items: start;">
+      <div class="panel stack">
+        <h2 style="font-size: 1.25rem;">New Booking</h2>
+        <p class="muted" style="font-size: 0.9rem; margin-bottom: 1rem;">Reserve your spot in the studio.</p>
+
+        <form id="reservation-form">
+          <div class="input">
+            <label for="date">Date</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="input">
+              <label for="start">Start Time</label>
+              <select id="start" name="start" required></select>
+            </div>
+            <div class="input">
+              <label for="end">End Time</label>
+              <select id="end" name="end" required></select>
+            </div>
+          </div>
+          <div class="input">
+            <label for="title">Project / Title (Optional)</label>
+            <input id="title" name="title" type="text" placeholder="e.g. Design Review" />
+          </div>
+          <button class="button primary" type="submit" style="width: 100%;">Confirm Reservation</button>
+          <p id="reservation-message" class="notice" style="text-align: center;"></p>
+        </form>
+      </div>
+
+      <div class="stack">
+        <div class="panel">
+          <h2 style="font-size: 1.25rem;">Active Bookings</h2>
+          <div id="reservation-list" class="stack" style="margin-top: 1.5rem;"></div>
+        </div>
+
+        <div class="panel" style="background: transparent; border-style: dashed;">
+          <h2 style="font-size: 1.1rem; color: var(--text-dim);">Booking History</h2>
+          <div id="history-list" class="stack" style="margin-top: 1rem;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="/reservations.js?v=3"></script>
+</body>
+
+</html>

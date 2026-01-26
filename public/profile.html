@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile · Meeting Room Booking</title>
+    <link rel="stylesheet" href="/styles.css?v=3" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <nav class="nav">
+        <strong>J.Leo Architecture · Meeting Room Booking App</strong>
+        <div class="nav-links">
+          <a href="/app.html">Dashboard</a>
+          <a href="/reservations.html">My Bookings</a>
+          <a href="/profile.html" class="active">Profile</a>
+          <button class="button ghost" id="logout">Sign out</button>
+        </div>
+      </nav>
+
+      <section class="grid" style="grid-template-columns: 1fr 1fr; align-items: start;">
+        <div class="panel">
+          <h2 style="margin-bottom: 1rem;">Profile details</h2>
+          <form id="profile-form">
+            <div class="input">
+              <label for="profile-name">Name</label>
+              <input id="profile-name" type="text" required />
+            </div>
+            <div class="input">
+              <label for="profile-email">Email</label>
+              <input id="profile-email" type="email" required />
+            </div>
+            <div class="input">
+              <label for="profile-company">Company</label>
+              <input id="profile-company" type="text" required />
+            </div>
+            <button class="button primary" type="submit">Save changes</button>
+            <p id="profile-message" class="notice"></p>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2 style="margin-bottom: 1rem;">Change password</h2>
+          <form id="password-form">
+            <div class="input">
+              <label for="current-password">Current password</label>
+              <input id="current-password" type="password" required />
+            </div>
+            <div class="input">
+              <label for="new-password">New password</label>
+              <input id="new-password" type="password" required />
+            </div>
+            <button class="button" type="submit">Update password</button>
+            <p id="password-message" class="notice"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/profile.js?v=3"></script>
+  </body>
+</html>

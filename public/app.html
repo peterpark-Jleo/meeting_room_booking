@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard · Meeting Room Booking</title>
+  <link rel="stylesheet" href="/styles.css?v=3" />
+</head>
+
+<body>
+  <main class="app-shell">
+    <nav class="nav">
+      <strong>J.Leo Architecture · Meeting Room Booking App</strong>
+        <div class="nav-links">
+          <a href="/app.html" class="active">Dashboard</a>
+          <a href="/reservations.html">My Bookings</a>
+          <a href="/profile.html">Profile</a>
+          <button class="button ghost" id="logout">Sign out</button>
+        </div>
+      </nav>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+      <div class="panel" style="padding: 1.5rem;">
+        <label class="muted" style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Week
+          Summary</label>
+        <h2 id="week-summary" style="margin-top: 0.5rem; margin-bottom: 0;">Loading...</h2>
+      </div>
+      <div class="panel" style="padding: 1.5rem;">
+        <label class="muted" style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Today's
+          Load</label>
+        <h2 id="today-summary" style="margin-top: 0.5rem; margin-bottom: 0;">Loading...</h2>
+      </div>
+    </div>
+
+    <section class="panel" style="flex: 1;">
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h2 style="margin-bottom: 0.25rem;">Schedule</h2>
+          <p class="muted" id="schedule-subtitle">Browse and manage room availability</p>
+        </div>
+        <div class="tabs">
+          <button class="tab active" data-tab="weekly">Weekly</button>
+          <button class="tab" data-tab="monthly">Monthly</button>
+        </div>
+      </div>
+
+      <div class="schedule-controls" id="weekly-controls">
+        <div style="display: flex; gap: 8px;">
+          <button class="button ghost" id="week-prev">←</button>
+          <button class="button ghost" id="week-today" style="font-size: 0.8rem;">Current Week</button>
+          <button class="button ghost" id="week-next">→</button>
+        </div>
+        <div class="range Outfit" id="week-range" style="font-size: 1.1rem; font-weight: 600;"></div>
+      </div>
+
+      <div id="weekly-view"></div>
+
+      <div class="schedule-controls" id="monthly-controls" style="display: none;">
+        <div style="display: flex; gap: 8px;">
+          <button class="button ghost" id="month-prev">←</button>
+          <button class="button ghost" id="month-today" style="font-size: 0.8rem;">Current Month</button>
+          <button class="button ghost" id="month-next">→</button>
+        </div>
+        <div class="range Outfit" id="month-range" style="font-size: 1.1rem; font-weight: 600;"></div>
+      </div>
+
+      <div id="monthly-view" style="display: none;"></div>
+    </section>
+  </main>
+  <script type="module" src="/app.js?v=3"></script>
+</body>
+
+</html>

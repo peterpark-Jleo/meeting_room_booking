@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Workspace · Meeting Room Booking</title>
+  <link rel="stylesheet" href="/styles.css?v=3" />
+</head>
+
+<body>
+  <main class="app-shell">
+    <nav class="nav">
+      <strong>J.Leo Architecture · Meeting Room Booking App</strong>
+      <div class="nav-links">
+        <a href="/admin.html" class="active">Manager</a>
+        <button class="button ghost" id="logout">Sign out</button>
+      </div>
+    </nav>
+
+    <section class="panel" style="padding-bottom: 0;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+        <div>
+          <h1 style="font-size: 1.75rem; margin-bottom: 0.25rem;">Control Center</h1>
+          <p class="muted">Manage room policies, members, and approvals.</p>
+        </div>
+        <div class="tabs">
+          <button class="tab active" data-admin-tab="dashboard">Overview</button>
+          <button class="tab" data-admin-tab="members">Members</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="admin-dashboard">
+      <div class="grid" style="margin-bottom: 1.5rem;">
+        <div class="panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <label class="muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Policy
+              Enforcement</label>
+            <h3 style="margin: 0.5rem 0;">Booking Approval</h3>
+            <p class="muted" style="font-size: 0.85rem;">When enabled, all reservations require manual confirmation.</p>
+          </div>
+          <div style="margin-top: 1.5rem;">
+            <button class="button" id="approval-toggle" style="width: 100%;">Loading...</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <label class="muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Weekly
+            Activity</label>
+          <div id="admin-summary" class="stack" style="margin-top: 1rem; font-size: 1.1rem; font-weight: 600;"></div>
+          <p id="signup-summary" class="notice" style="margin-top: 1rem; display: block;"></p>
+        </div>
+      </div>
+
+      <section class="panel" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2>Master Schedule</h2>
+          <div class="schedule-controls" id="admin-weekly-controls" style="margin-bottom: 0;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button class="button ghost" id="admin-week-prev">←</button>
+              <button class="button ghost" id="admin-week-today" style="font-size: 0.8rem;">Today</button>
+              <button class="button ghost" id="admin-week-next">→</button>
+              <div class="range Outfit" id="admin-week-range" style="margin-left: 1rem; font-weight: 600;"></div>
+            </div>
+          </div>
+        </div>
+        <div id="admin-weekly"></div>
+      </section>
+
+      <div class="grid">
+        <section class="panel">
+          <h2 style="font-size: 1.25rem;">Action Required</h2>
+          <div id="pending-list" class="stack" style="margin-top: 1.5rem;"></div>
+        </section>
+
+        <section class="panel">
+          <h2 style="font-size: 1.25rem;">Recent Logs</h2>
+          <div id="admin-history" class="stack" style="margin-top: 1.5rem;"></div>
+        </section>
+      </div>
+    </div>
+
+    <div id="admin-members" style="display: none;">
+      <div class="stack">
+        <section class="panel">
+          <div style="margin-bottom: 2rem;">
+            <h2>Member Management</h2>
+            <p class="muted">Provision accounts and manage permissions.</p>
+          </div>
+
+          <div class="panel" style="background: rgba(255,255,255,0.02); margin-bottom: 2rem;">
+            <h3>Onboarding Requests</h3>
+            <div id="signup-list" class="stack" style="margin-top: 1rem;"></div>
+          </div>
+
+          <div class="panel" style="margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1.5rem;">Add New Member</h3>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+              <div class="input">
+                <label for="create-name">Full Name</label>
+                <input id="create-name" type="text" placeholder="John Smith" />
+              </div>
+              <div class="input">
+                <label for="create-email">Email Address</label>
+                <input id="create-email" type="email" placeholder="john@company.com" />
+              </div>
+              <div class="input">
+                <label for="create-company">Company</label>
+                <input id="create-company" type="text" placeholder="Studio X" />
+              </div>
+              <div class="input">
+                <label for="create-password">Temporary Password</label>
+                <input id="create-password" type="password" placeholder="••••••••" />
+              </div>
+              <div class="input">
+                <label for="create-role">Access Level</label>
+                <select id="create-role">
+                  <option value="user">Standard User</option>
+                  <option value="admin">Administrator</option>
+                </select>
+              </div>
+              <div class="input">
+                <label for="create-status">Initial Status</label>
+                <select id="create-status">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem;">
+              <button class="button primary" id="create-member">Provision Account</button>
+              <span id="create-member-message" class="notice"></span>
+            </div>
+          </div>
+
+          <div class="panel" style="background: transparent;">
+            <h3 style="margin-bottom: 1.5rem;">Member Directory</h3>
+            <div class="grid" style="grid-template-columns: 2fr 1fr 1fr; margin-bottom: 2rem;">
+              <div class="input">
+                <label for="member-search">Search Directory</label>
+                <input id="member-search" type="text" placeholder="Search name, email, or company..." />
+              </div>
+              <div class="input">
+                <label for="member-role">Filter Role</label>
+                <select id="member-role">
+                  <option value="">All Roles</option>
+                  <option value="admin">Administrators</option>
+                  <option value="user">Users</option>
+                </select>
+              </div>
+              <div class="input">
+                <label for="member-status">Filter Status</label>
+                <select id="member-status">
+                  <option value="">All Status</option>
+                  <option value="active">Active Only</option>
+                  <option value="inactive">Inactive Only</option>
+                </select>
+              </div>
+            </div>
+            <div id="members-list" class="stack"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="/admin.js?v=3"></script>
+</body>
+
+</html>
