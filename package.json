@@ -9,7 +9,8 @@
     "seed:admin": "node server/seed-admin.js",
     "seed:user": "node server/seed-user.js",
     "db:up": "docker compose up -d",
-    "db:down": "docker compose down"
+    "db:down": "docker compose down",
+    "build-info": "node server/generate-build-info.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

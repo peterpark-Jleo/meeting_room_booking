@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Meeting Room Booking</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles.css?v=4" />
   </head>
   <body>
-    <main style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+    <main style="display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column;">
       <section class="form-card" style="width: 100%; max-width: 400px;">
         <div style="text-align: center; margin-bottom: 2rem;">
           <h1 style="font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
@@ -36,7 +36,10 @@
           <a href="/signup.html" class="button ghost" style="width: 100%;">Request Access</a>
         </div>
       </section>
+      <div class="build-info"></div>
     </main>
+    <script src="/build-info.js?v=1"></script>
     <script type="module" src="/login.js"></script>
+    <script src="/build-info-loader.js?v=1"></script>
   </body>
 </html>

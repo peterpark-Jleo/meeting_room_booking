@@ -136,6 +136,15 @@ function formatReservationEmail({ action, reservation, companyName, reason }) {
   return lines.join("");
 }
 
+function generateTempPassword(length = 12) {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+  let result = "";
+  for (let i = 0; i < length; i += 1) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 app.post("/api/auth/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -822,6 +831,37 @@ app.post("/api/admin/users/:id/password", requireAuth, requireAdmin, async (req,
     id
   ]);
   return res.json({ ok: true });
+});
+
+app.post("/api/admin/users/:id/password-reset", requireAuth, requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  const userResult = await pool.query("select id, email, name from users where id = $1", [id]);
+  const user = userResult.rows[0];
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  const tempPassword = generateTempPassword();
+  const hash = await bcrypt.hash(tempPassword, 10);
+  await pool.query("update users set password_hash = $1, updated_at = now() where id = $2", [
+    hash,
+    id
+  ]);
+
+  let emailSent = false;
+  try {
+    const html = `<p>Your temporary password is: <strong>${tempPassword}</strong></p>`;
+    const result = await sendEmail({
+      to: user.email,
+      subject: "Temporary password for Meeting Room Booking",
+      html
+    });
+    emailSent = !result?.skipped;
+  } catch (error) {
+    emailSent = false;
+  }
+
+  return res.json({ temp_password: tempPassword, email_sent: emailSent });
 });
 
 app.patch("/api/admin/settings/reservation", requireAuth, requireAdmin, async (req, res) => {

@@ -14,6 +14,8 @@ const weekSummary = document.getElementById("week-summary");
 const todaySummary = document.getElementById("today-summary");
 const weeklyView = document.getElementById("weekly-view");
 const monthlyView = document.getElementById("monthly-view");
+const weeklyMobile = document.getElementById("weekly-mobile");
+const monthlyMobile = document.getElementById("monthly-mobile");
 const weekPrev = document.getElementById("week-prev");
 const weekNext = document.getElementById("week-next");
 const weekToday = document.getElementById("week-today");
@@ -36,6 +38,10 @@ tabs.forEach((tab) => {
     if (weeklyControls && monthlyControls) {
       weeklyControls.style.display = target === "weekly" ? "flex" : "none";
       monthlyControls.style.display = target === "monthly" ? "flex" : "none";
+    }
+    if (weeklyMobile && monthlyMobile) {
+      weeklyMobile.style.display = target === "weekly" ? "block" : "none";
+      monthlyMobile.style.display = target === "monthly" ? "block" : "none";
     }
   });
 });
@@ -252,6 +258,84 @@ function buildMonthlyCalendar(days, monthStart) {
   return grid;
 }
 
+function buildWeeklyMobileList(reservations, startDate) {
+  const start = new Date(startDate);
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    return d;
+  });
+  const todayKey = new Date().toDateString();
+  const container = document.createElement("div");
+  container.className = "mobile-schedule";
+
+  days.forEach((day) => {
+    const entries = reservations.filter(
+      (reservation) => new Date(reservation.start_at).toDateString() === day.toDateString()
+    );
+    if (!entries.length) {
+      return;
+    }
+    const group = document.createElement("div");
+    group.className = "mobile-day";
+    if (day.toDateString() === todayKey) {
+      group.classList.add("today");
+    }
+    group.innerHTML = `
+      <div class="mobile-day-header">
+        ${day.toLocaleDateString("en-GB", { weekday: "long", day: "2-digit", month: "2-digit" })}
+      </div>
+    `;
+    const list = document.createElement("div");
+    list.className = "mobile-day-items";
+    entries.forEach((entry) => {
+      const item = document.createElement("div");
+      item.className = "mobile-item";
+      item.innerHTML = `<strong>${entry.company_name}</strong><br />${formatTime(
+        entry.start_at
+      )}–${formatTime(entry.end_at)}`;
+      list.appendChild(item);
+    });
+    group.appendChild(list);
+    container.appendChild(group);
+  });
+
+  if (!container.childElementCount) {
+    container.innerHTML = "<p class=\"notice\">No bookings this week.</p>";
+  }
+  return container;
+}
+
+function buildMonthlyMobileList(days) {
+  const container = document.createElement("div");
+  container.className = "mobile-schedule";
+  if (!days.length) {
+    container.innerHTML = "<p class=\"notice\">No bookings this month.</p>";
+    return container;
+  }
+  days.forEach((day) => {
+    if (!day.items?.length) {
+      return;
+    }
+    const group = document.createElement("div");
+    group.className = "mobile-day";
+    group.innerHTML = `<div class="mobile-day-header">${day.date}</div>`;
+    const list = document.createElement("div");
+    list.className = "mobile-day-items";
+    day.items.forEach((item) => {
+      const entry = document.createElement("div");
+      entry.className = "mobile-item";
+      entry.innerHTML = `<strong>${item.company_name}</strong><br />${formatTime(
+        item.start_at
+      )}–${formatTime(item.end_at)}`;
+      list.appendChild(entry);
+    });
+    group.appendChild(list);
+    container.appendChild(group);
+  });
+  return container;
+}
+
 let currentWeekStart = getWeekStart(new Date());
 let currentMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 
@@ -272,6 +356,10 @@ async function loadDashboard() {
   const reservations = weeklyData.reservations || [];
   weeklyView.innerHTML = "";
   weeklyView.appendChild(buildWeeklyTable(reservations, weekStart));
+  if (weeklyMobile) {
+    weeklyMobile.innerHTML = "";
+    weeklyMobile.appendChild(buildWeeklyMobileList(reservations, weekStart));
+  }
   if (weekRange) {
     weekRange.textContent = formatRangeLabel(weekStart);
   }
@@ -280,6 +368,10 @@ async function loadDashboard() {
   monthlyView.appendChild(
     buildMonthlyCalendar(buildMonthlyTable(monthlyData.days || []), monthStart)
   );
+  if (monthlyMobile) {
+    monthlyMobile.innerHTML = "";
+    monthlyMobile.appendChild(buildMonthlyMobileList(monthlyData.days || []));
+  }
   if (monthRange) {
     monthRange.textContent = monthStart.toLocaleDateString("en-GB", {
       month: "long",

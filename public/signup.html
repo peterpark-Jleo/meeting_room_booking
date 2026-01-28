@@ -5,11 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Request Access · Meeting Room Booking</title>
-  <link rel="stylesheet" href="/styles.css?v=3" />
+    <link rel="stylesheet" href="/styles.css?v=4" />
 </head>
 
-<body>
-  <main style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+  <body>
+    <main style="display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column;">
     <section class="form-card" style="width: 100%; max-width: 440px;">
       <div style="text-align: center; margin-bottom: 2rem;">
         <h1
@@ -44,9 +44,12 @@
         style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--surface-border); text-align: center;">
         <a href="/" class="button ghost" style="width: 100%;">Return to Sign In</a>
       </div>
-    </section>
-  </main>
-  <script type="module" src="/signup.js?v=3"></script>
-</body>
+      </section>
+      <div class="build-info"></div>
+    </main>
+    <script src="/build-info.js?v=1"></script>
+    <script type="module" src="/signup.js?v=3"></script>
+    <script src="/build-info-loader.js?v=1"></script>
+  </body>
 
 </html>

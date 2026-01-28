@@ -5,13 +5,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Workspace · Meeting Room Booking</title>
-  <link rel="stylesheet" href="/styles.css?v=3" />
+  <link rel="stylesheet" href="/styles.css?v=4" />
 </head>
 
 <body>
   <main class="app-shell">
     <nav class="nav">
-      <strong>J.Leo Architecture · Meeting Room Booking App</strong>
+      <div>
+        <strong>J.Leo Architecture · Meeting Room Booking App</strong>
+        <div class="build-info"></div>
+      </div>
       <div class="nav-links">
         <a href="/admin.html" class="active">Manager</a>
         <button class="button ghost" id="logout">Sign out</button>
@@ -164,7 +167,9 @@
       </div>
     </div>
   </main>
+  <script src="/build-info.js?v=1"></script>
   <script type="module" src="/admin.js?v=3"></script>
+  <script src="/build-info-loader.js?v=1"></script>
 </body>
 
 </html>

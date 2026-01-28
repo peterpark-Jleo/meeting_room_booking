@@ -389,16 +389,13 @@ function buildMemberRow(member) {
             <option value="inactive" ${member.status === "inactive" ? "selected" : ""}>Inactive</option>
           </select>
         </div>
-        <div class="input">
-          <label>New Password</label>
-          <input type="password" data-field="password" placeholder="••••••••" />
-        </div>
       </div>
-      <div style="display: flex; gap: 8px;">
+      <div class="card-actions">
         <button class="button primary" data-action="save">Save</button>
-        <button class="button" data-action="password">Change Password</button>
+        <button class="button" data-action="reset">Reset Password</button>
         <button class="button" data-action="deactivate">Deactivate</button>
       </div>
+      <div class="notice" data-reset-message></div>
     </div>
   `;
 
@@ -422,20 +419,23 @@ function buildMemberRow(member) {
     await loadMembers();
   });
 
-  row.querySelector("[data-action=password]").addEventListener("click", async () => {
-    const password = row.querySelector("[data-field=password]").value;
-    if (!password) {
-      alert("Enter a new password first.");
+  row.querySelector("[data-action=reset]").addEventListener("click", async () => {
+    const message = row.querySelector("[data-reset-message]");
+    message.textContent = "";
+    if (!window.confirm("Reset this member's password?")) {
       return;
     }
-    if (!window.confirm("Change this member's password?")) {
-      return;
-    }
-    await fetchWithAuth(`/api/admin/users/${member.id}/password`, {
-      method: "POST",
-      body: JSON.stringify({ password })
+    const result = await fetchWithAuth(`/api/admin/users/${member.id}/password-reset`, {
+      method: "POST"
     });
-    row.querySelector("[data-field=password]").value = "";
+    if (result.temp_password) {
+      message.textContent = `Temp password: ${result.temp_password}${
+        result.email_sent ? " (emailed)" : ""
+      }`;
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(result.temp_password).catch(() => {});
+      }
+    }
   });
 
   row.querySelector("[data-action=deactivate]").addEventListener("click", async () => {

@@ -68,6 +68,23 @@ npm run seed:user
 - Already-applied SQL files are skipped automatically
 - `002_dummy_users.sql` seeds three demo members (password: `user1234`)
 
+## Build Info (Manual)
+
+- Update `public/build-info.js` with the current version/date
+
+## Cloud Run Deployment (GitHub Actions)
+
+Workflow: `.github/workflows/deploy.yml`
+
+Secrets required:
+- `GCP_WIF_PROVIDER` (Workload Identity Provider resource name)
+- `GCP_SERVICE_ACCOUNT` (Service account email)
+
+Service configuration:
+- Project: `hopeful-runner-485518-b8`
+- Region: `europe-west1`
+- Service: `meeting-room-booking`
+
 ## Pages
 
 - `/` Login

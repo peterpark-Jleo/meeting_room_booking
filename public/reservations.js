@@ -69,7 +69,7 @@ async function loadReservations() {
       <strong>${reservation.title || "Meeting room booking"}</strong>
       <div class="muted">${formatRange(reservation)}</div>
       <span class="badge ${reservation.status}">${reservation.status}</span>
-      <div style="margin-top: 12px; display: flex; gap: 8px;">
+      <div class="card-actions" style="margin-top: 12px;">
         <button class="button" data-action="change">Request time change</button>
         <button class="button" data-action="cancel">Cancel</button>
       </div>

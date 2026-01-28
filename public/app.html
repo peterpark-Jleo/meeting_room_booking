@@ -5,13 +5,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard · Meeting Room Booking</title>
-  <link rel="stylesheet" href="/styles.css?v=3" />
+  <link rel="stylesheet" href="/styles.css?v=4" />
 </head>
 
 <body>
   <main class="app-shell">
     <nav class="nav">
-      <strong>J.Leo Architecture · Meeting Room Booking App</strong>
+      <div>
+        <strong>J.Leo Architecture · Meeting Room Booking App</strong>
+        <div class="build-info"></div>
+      </div>
         <div class="nav-links">
           <a href="/app.html" class="active">Dashboard</a>
           <a href="/reservations.html">My Bookings</a>
@@ -55,7 +58,8 @@
         <div class="range Outfit" id="week-range" style="font-size: 1.1rem; font-weight: 600;"></div>
       </div>
 
-      <div id="weekly-view"></div>
+      <div id="weekly-view" class="desktop-only"></div>
+      <div id="weekly-mobile" class="mobile-only"></div>
 
       <div class="schedule-controls" id="monthly-controls" style="display: none;">
         <div style="display: flex; gap: 8px;">
@@ -66,10 +70,13 @@
         <div class="range Outfit" id="month-range" style="font-size: 1.1rem; font-weight: 600;"></div>
       </div>
 
-      <div id="monthly-view" style="display: none;"></div>
+      <div id="monthly-view" class="desktop-only" style="display: none;"></div>
+      <div id="monthly-mobile" class="mobile-only" style="display: none;"></div>
     </section>
   </main>
+  <script src="/build-info.js?v=1"></script>
   <script type="module" src="/app.js?v=3"></script>
+  <script src="/build-info-loader.js?v=1"></script>
 </body>
 
 </html>

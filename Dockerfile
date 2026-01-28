@@ -1,28 +1,20 @@
-# Build and run the application
 FROM node:20-slim
 
-# Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Install app dependencies
-COPY package*.json ./
-RUN npm install --production
+COPY package.json package-lock.json* ./
+RUN npm install --omit=dev
 
-# Bundle app source
 COPY . .
 
-# Explicitly exclude local node_modules if they exist
-RUN rm -rf node_modules
+ARG GITHUB_SHA=local
+ENV GITHUB_SHA=${GITHUB_SHA}
 
-# Reinstall production deps cleanly inside the container
-RUN npm install --production
+RUN npm run build-info
 
-# Build environment variables (can be overridden at runtime)
 ENV NODE_ENV=production
 ENV PORT=8080
 
-# Expose the port
 EXPOSE 8080
 
-# Start command
-CMD [ "npm", "start" ]
+CMD ["npm", "start"]
