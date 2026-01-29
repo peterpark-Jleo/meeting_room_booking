@@ -88,7 +88,7 @@ async function recordNotification(client, reservationId, type, payload) {
 
 async function fetchReservationContext(client, reservationId) {
   const result = await client.query(
-    `select r.*, u.email, u.company_name
+    `select r.*, u.email, u.company_name, u.name
      from reservations r
      join users u on u.id = r.user_id
      where r.id = $1`,
@@ -107,6 +107,7 @@ async function sendReservationEmail(client, reservationId, action, reason) {
     action,
     reservation,
     companyName: reservation.company_name,
+    recipientName: reservation.name,
     reason
   });
 
@@ -118,22 +119,92 @@ async function sendReservationEmail(client, reservationId, action, reason) {
   return reservation;
 }
 
-function formatReservationEmail({ action, reservation, companyName, reason }) {
-  const start = DateTime.fromJSDate(reservation.start_at).toFormat("yyyy-LL-dd HH:mm");
-  const end = DateTime.fromJSDate(reservation.end_at).toFormat("HH:mm");
+function formatUkDate(value) {
+  return DateTime.fromJSDate(value).toFormat("dd/LL/yyyy");
+}
+
+function formatUkTime(value) {
+  return DateTime.fromJSDate(value).toFormat("HH:mm");
+}
+
+function formatFormalEmail({ recipientName, intro, details, closingNote }) {
+  const greeting = recipientName ? `Dear ${recipientName},` : "Dear colleague,";
+  const detailBlock = details?.length
+    ? `<div style="margin: 12px 0; padding: 12px; border: 1px solid #e2e8f0;">${details.join("")}</div>`
+    : "";
+
+  return [
+    `<p>${greeting}</p>`,
+    `<p>${intro}</p>`,
+    detailBlock,
+    `<p>${closingNote || "If you have any questions, please contact us."}</p>`,
+    `<p>Kind regards,</p>`,
+    `<p>Jleo Estate Managing Team</p>`,
+    `<p>J.Leo Architecture</p>`,
+    `<p>60 High Street, New Malden, Surrey, KT3 4EZ, UK</p>`,
+    `<p>booking@jleo.uk</p>`,
+    `<p>www.jleo.uk</p>`
+  ].join("");
+}
+
+function formatReservationEmail({ action, reservation, companyName, recipientName, reason }) {
+  const date = formatUkDate(reservation.start_at);
+  const start = formatUkTime(reservation.start_at);
+  const end = formatUkTime(reservation.end_at);
   const duration = Interval.fromDateTimes(reservation.start_at, reservation.end_at)
     .length("minutes")
     .toFixed(0);
-  const lines = [
-    `<p><strong>${companyName}</strong> booking was ${action}.</p>`,
+  const actionMap = {
+    created: "has been confirmed",
+    updated: "has been updated",
+    canceled: "has been cancelled",
+    approved: "has been approved",
+    rejected: "has been declined",
+    "change requested": "has been received and is pending review"
+  };
+  const actionText = actionMap[action] || `was ${action}`;
+
+  const details = [
+    `<p>Company: ${companyName}</p>`,
+    `<p>Date: ${date}</p>`,
     `<p>Time: ${start} - ${end} (${duration} minutes)</p>`
   ];
 
   if (reason) {
-    lines.push(`<p>Rejection reason: ${reason}</p>`);
+    details.push(`<p>Rejection reason: ${reason}</p>`);
   }
 
-  return lines.join("");
+  return formatFormalEmail({
+    recipientName,
+    intro: `This is to confirm that your meeting room booking ${actionText}.`,
+    details
+  });
+}
+
+function formatAccountEmail({ recipientName, email, companyName, subject }) {
+  const details = [
+    `<p>Name: ${recipientName}</p>`,
+    `<p>Email: ${email}</p>`,
+    `<p>Company: ${companyName}</p>`
+  ];
+
+  return formatFormalEmail({
+    recipientName,
+    intro: subject,
+    details
+  });
+}
+
+function formatPasswordEmail({ recipientName, message, tempPassword }) {
+  const details = [];
+  if (tempPassword) {
+    details.push(`<p>Temporary password: <strong>${tempPassword}</strong></p>`);
+  }
+  return formatFormalEmail({
+    recipientName,
+    intro: message,
+    details
+  });
 }
 
 function generateTempPassword(length = 12) {
@@ -270,6 +341,21 @@ app.post("/api/profile/password", requireAuth, async (req, res) => {
     "update users set password_hash = $1, updated_at = now() where id = $2",
     [hash, req.user.id]
   );
+  const userResult = await pool.query(
+    "select name, email, company_name from users where id = $1",
+    [req.user.id]
+  );
+  const userProfile = userResult.rows[0];
+  if (userProfile) {
+    await sendEmail({
+      to: userProfile.email,
+      subject: "Password updated",
+      html: formatPasswordEmail({
+        recipientName: userProfile.name,
+        message: "Your account password has been updated."
+      })
+    });
+  }
   return res.json({ ok: true });
 });
 
@@ -736,6 +822,16 @@ app.post("/api/admin/signup-requests/:id/approve", requireAuth, requireAdmin, as
       [request.id]
     );
 
+    await sendEmail({
+      to: request.email,
+      subject: "Your account request was approved",
+      html: formatAccountEmail({
+        recipientName: request.name,
+        email: request.email,
+        companyName: request.company_name,
+        subject: "Your account request has been approved. You can now sign in."
+      })
+    });
     return res.json({ ok: true });
   });
 });
@@ -757,7 +853,18 @@ app.post("/api/admin/users", requireAuth, requireAdmin, async (req, res) => {
        returning id, email, name, company_name, role, status, created_at`,
       [email, hash, name, company_name, nextRole, nextStatus]
     );
-    return res.status(201).json(result.rows[0]);
+    const created = result.rows[0];
+    await sendEmail({
+      to: created.email,
+      subject: "Your account has been created",
+      html: formatAccountEmail({
+        recipientName: created.name,
+        email: created.email,
+        companyName: created.company_name,
+        subject: "Your account has been created and is ready for use."
+      })
+    });
+    return res.status(201).json(created);
   } catch (error) {
     if (error.code === "23505") {
       return res.status(409).json({ error: "Email already exists" });
@@ -850,7 +957,11 @@ app.post("/api/admin/users/:id/password-reset", requireAuth, requireAdmin, async
 
   let emailSent = false;
   try {
-    const html = `<p>Your temporary password is: <strong>${tempPassword}</strong></p>`;
+    const html = formatPasswordEmail({
+      recipientName: user.name,
+      message: "A temporary password has been issued for your account.",
+      tempPassword
+    });
     const result = await sendEmail({
       to: user.email,
       subject: "Temporary password for Meeting Room Booking",
