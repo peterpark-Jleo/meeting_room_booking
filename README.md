@@ -72,6 +72,15 @@ npm run seed:user
 
 - Update `public/build-info.js` with the current version/date
 
+## Email Configuration
+
+Required:
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL` (e.g. `no-reply@updates.jleo.uk`)
+
+Optional:
+- `RESEND_DAILY_LIMIT` (number of emails allowed per day; 0 = unlimited)
+
 ## Cloud Run Deployment (GitHub Actions)
 
 Workflow: `.github/workflows/deploy.yml`
