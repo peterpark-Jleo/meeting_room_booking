@@ -1,5 +1,17 @@
 const form = document.getElementById("signup-form");
 const message = document.getElementById("signup-message");
+const passwordInput = document.getElementById("password");
+const confirmInput = document.getElementById("confirm-password");
+
+document.querySelectorAll(".toggle-password").forEach((button) => {
+  button.addEventListener("click", () => {
+    const target = document.getElementById(button.dataset.target);
+    if (!target) {
+      return;
+    }
+    target.type = target.type === "password" ? "text" : "password";
+  });
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -12,6 +24,11 @@ form.addEventListener("submit", async (event) => {
     company_name: formData.get("company")?.toString().trim(),
     password: formData.get("password")?.toString()
   };
+
+  if (passwordInput.value !== confirmInput.value) {
+    message.textContent = "Passwords do not match.";
+    return;
+  }
 
   const response = await fetch("/api/signup", {
     method: "POST",

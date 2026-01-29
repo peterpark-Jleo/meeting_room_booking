@@ -36,6 +36,16 @@ const adminWeekRange = document.getElementById("admin-week-range");
 const signupSummary = document.getElementById("signup-summary");
 const signupList = document.getElementById("signup-list");
 
+document.querySelectorAll(".toggle-password").forEach((button) => {
+  button.addEventListener("click", () => {
+    const target = document.getElementById(button.dataset.target);
+    if (!target) {
+      return;
+    }
+    target.type = target.type === "password" ? "text" : "password";
+  });
+});
+
 const adminTabs = document.querySelectorAll("[data-admin-tab]");
 adminTabs.forEach((tab) => {
   tab.addEventListener("click", () => {

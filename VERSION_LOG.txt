@@ -1,3 +1,4 @@
+1.2 - 29/01/2026 - Meeting Room App Fix 모음
 1.1 - 28/01/2026 - Initial UI update baseline
 
 TEMPLATE: X.Y - DD/MM/YYYY - Short description of update

@@ -32,9 +32,15 @@
           <label for="company">Company / Studio Name</label>
           <input id="company" name="company" type="text" placeholder="Design Studio" required />
         </div>
-        <div class="input">
+        <div class="input password-field">
           <label for="password">Password</label>
           <input id="password" name="password" type="password" placeholder="••••••••" required />
+          <button class="toggle-password" type="button" data-target="password">👁</button>
+        </div>
+        <div class="input password-field">
+          <label for="confirm-password">Confirm Password</label>
+          <input id="confirm-password" name="confirm-password" type="password" placeholder="••••••••" required />
+          <button class="toggle-password" type="button" data-target="confirm-password">👁</button>
         </div>
         <button class="button primary" type="submit" style="width: 100%;">Submit Access Request</button>
         <p id="signup-message" class="notice" style="text-align: center;"></p>

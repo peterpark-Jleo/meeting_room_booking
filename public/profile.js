@@ -20,6 +20,16 @@ const companyInput = document.getElementById("profile-company");
 const currentPasswordInput = document.getElementById("current-password");
 const passwordInput = document.getElementById("new-password");
 
+document.querySelectorAll(".toggle-password").forEach((button) => {
+  button.addEventListener("click", () => {
+    const target = document.getElementById(button.dataset.target);
+    if (!target) {
+      return;
+    }
+    target.type = target.type === "password" ? "text" : "password";
+  });
+});
+
 async function loadProfile() {
   const response = await fetch("/api/auth/me", {
     headers: { Authorization: `Bearer ${token}` }

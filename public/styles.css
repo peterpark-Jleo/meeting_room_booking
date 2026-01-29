@@ -107,6 +107,11 @@ main {
   -webkit-text-fill-color: transparent;
 }
 
+.nav > div {
+  display: flex;
+  flex-direction: column;
+}
+
 .nav-links {
   display: flex;
   gap: 1.5rem;
@@ -205,6 +210,31 @@ main {
   transition: var(--transition);
 }
 
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 3rem;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.input select option {
+  background: #0b0f15;
+  color: var(--text-main);
+}
+
 .input input:focus,
 .input select:focus {
   outline: none;
@@ -290,49 +320,60 @@ main {
   background: rgba(79, 70, 229, 0.05);
 }
 
+.weekly-table th.weekend-sun,
+.weekly-table td.weekend-sun,
+.monthly-grid .cell.weekend-sun,
+.mobile-day.weekend-sun {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.weekly-table th.weekend-sat,
+.weekly-table td.weekend-sat,
+.monthly-grid .cell.weekend-sat,
+.mobile-day.weekend-sat {
+  background: rgba(59, 130, 246, 0.12);
+}
+
 /* Reservation Cards in Grid */
 .reservation-card {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(148, 163, 184, 0.15);
   border-radius: var(--radius-sm);
   padding: 0.5rem;
-  color: var(--text-dim);
+  color: var(--text-main);
   font-size: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(148, 163, 184, 0.35);
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 2px;
   height: 100%;
   transition: var(--transition);
-  filter: grayscale(0.8);
-  opacity: 0.6;
+  filter: none;
+  opacity: 1;
 }
 
 .reservation-card.mine {
-  background: linear-gradient(135deg, #4f46e5, #0ea5e9);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 25px rgba(14, 165, 233, 0.5);
-  filter: none;
-  opacity: 1;
+  background: rgba(16, 185, 129, 0.2);
+  color: #d1fae5;
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
   z-index: 5;
 }
 
 .reservation-card.mine strong {
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: #ecfdf5;
 }
 
 .reservation-card strong {
   font-weight: 700;
   font-size: 0.85rem;
-  color: var(--text-dim);
+  color: var(--text-main);
 }
 
 /* Monthly Grid Redesign */
 .monthly-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 1px;
   background: var(--surface-border);
   border: 1px solid var(--surface-border);
@@ -370,28 +411,27 @@ main {
 }
 
 .monthly-entry {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(148, 163, 184, 0.35);
   border-radius: 4px;
   padding: 4px 6px;
   font-size: 0.7rem;
   margin-bottom: 4px;
-  border-left: 3px solid #334155;
+  border-left: 3px solid rgba(148, 163, 184, 0.6);
   color: var(--text-dim);
-  opacity: 0.7;
+  opacity: 1;
 }
 
 .monthly-entry.mine {
-  background: var(--primary);
-  border-left: 3px solid #fff;
-  color: white;
-  border-color: var(--primary);
-  opacity: 1;
-  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+  background: rgba(16, 185, 129, 0.2);
+  border-left: 3px solid rgba(16, 185, 129, 0.9);
+  color: #d1fae5;
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
 }
 
 .monthly-entry.mine strong {
-  color: white;
+  color: #ecfdf5;
 }
 
 /* Badges */
@@ -481,12 +521,26 @@ main {
 }
 
 .mobile-item {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(148, 163, 184, 0.35);
   border-radius: 6px;
   padding: 0.75rem;
   font-size: 0.85rem;
   color: var(--text-dim);
+}
+
+.mobile-item.mine {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: #d1fae5;
+}
+
+.weekend-sun {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.weekend-sat {
+  background: rgba(59, 130, 246, 0.12);
 }
 
 .card-actions {
@@ -602,5 +656,28 @@ main {
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: 1fr !important;
+  }
+
+  .nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .nav strong {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .nav .build-info {
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
   }
 }

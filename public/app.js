@@ -78,7 +78,7 @@ function formatRangeLabel(startDate) {
   return `${startDate.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
 }
 
-function buildWeeklyTable(reservations, startDate) {
+function buildWeeklyTable(reservations, startDate, currentUserId) {
   const start = new Date(startDate);
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(start);
@@ -115,6 +115,12 @@ function buildWeeklyTable(reservations, startDate) {
     th.innerHTML = `${dayLabels[day.getDay()]}<br /><span class="muted">${day.toLocaleDateString(
       "en-GB"
     )}</span>`;
+    if (day.getDay() === 0) {
+      th.classList.add("weekend-sun");
+    }
+    if (day.getDay() === 6) {
+      th.classList.add("weekend-sat");
+    }
     if (day.toDateString() === new Date().toDateString()) {
       th.classList.add("today-cell");
     }
@@ -159,7 +165,7 @@ function buildWeeklyTable(reservations, startDate) {
 
       const match = reservationMap[dayIndex].get(slotIndex);
       if (match) {
-        const isMine = user && match.reservation.user_id === user.id;
+        const isMine = currentUserId && match.reservation.user_id === currentUserId;
         const cell = document.createElement("td");
         cell.rowSpan = match.span;
         cell.innerHTML = `<div class="reservation-card ${isMine ? "mine" : ""}"><strong>${match.reservation.company_name}</strong><br />${formatTime(
@@ -169,6 +175,12 @@ function buildWeeklyTable(reservations, startDate) {
         )})</div>`;
         if (day.toDateString() === todayKey) {
           cell.classList.add("today-cell");
+        }
+        if (day.getDay() === 0) {
+          cell.classList.add("weekend-sun");
+        }
+        if (day.getDay() === 6) {
+          cell.classList.add("weekend-sat");
         }
         row.appendChild(cell);
         for (let i = 1; i < match.span; i += 1) {
@@ -182,6 +194,12 @@ function buildWeeklyTable(reservations, startDate) {
       const empty = document.createElement("td");
       if (day.toDateString() === todayKey) {
         empty.classList.add("today-cell");
+      }
+      if (day.getDay() === 0) {
+        empty.classList.add("weekend-sun");
+      }
+      if (day.getDay() === 6) {
+        empty.classList.add("weekend-sat");
       }
       row.appendChild(empty);
     });
@@ -204,7 +222,7 @@ function buildMonthlyTable(days) {
   return days;
 }
 
-function buildMonthlyCalendar(days, monthStart) {
+function buildMonthlyCalendar(days, monthStart, currentUserId) {
   const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const data = new Map(days.map((day) => [day.date, day.items]));
   const firstDay = new Date(monthStart);
@@ -215,16 +233,28 @@ function buildMonthlyCalendar(days, monthStart) {
   const grid = document.createElement("div");
   grid.className = "monthly-grid";
 
-  dayLabels.forEach((label) => {
+  dayLabels.forEach((label, index) => {
     const cell = document.createElement("div");
     cell.className = "cell header";
     cell.textContent = label;
+    if (index === 0) {
+      cell.classList.add("weekend-sun");
+    }
+    if (index === 6) {
+      cell.classList.add("weekend-sat");
+    }
     grid.appendChild(cell);
   });
 
   for (let i = 0; i < startOffset; i += 1) {
     const empty = document.createElement("div");
     empty.className = "cell";
+    if (i === 0) {
+      empty.classList.add("weekend-sun");
+    }
+    if (i === 6) {
+      empty.classList.add("weekend-sat");
+    }
     grid.appendChild(empty);
   }
 
@@ -233,6 +263,12 @@ function buildMonthlyCalendar(days, monthStart) {
     const key = date.toLocaleDateString("en-CA");
     const cell = document.createElement("div");
     cell.className = "cell";
+    if (date.getDay() === 0) {
+      cell.classList.add("weekend-sun");
+    }
+    if (date.getDay() === 6) {
+      cell.classList.add("weekend-sat");
+    }
     if (date.toDateString() === new Date().toDateString()) {
       cell.classList.add("today");
     }
@@ -243,7 +279,7 @@ function buildMonthlyCalendar(days, monthStart) {
 
     const items = data.get(key) || [];
     items.forEach((item) => {
-      const isMine = user && item.user_id === user.id;
+      const isMine = currentUserId && item.user_id === currentUserId;
       const entry = document.createElement("div");
       entry.className = `monthly-entry ${isMine ? "mine" : ""}`;
       entry.innerHTML = `<strong>${item.company_name}</strong><br />${formatTime(
@@ -255,10 +291,25 @@ function buildMonthlyCalendar(days, monthStart) {
     grid.appendChild(cell);
   }
 
+  const trailing = (7 - ((startOffset + totalDays) % 7)) % 7;
+  const offsetStart = (startOffset + totalDays) % 7;
+  for (let i = 0; i < trailing; i += 1) {
+    const empty = document.createElement("div");
+    empty.className = "cell";
+    const columnIndex = (offsetStart + i) % 7;
+    if (columnIndex === 0) {
+      empty.classList.add("weekend-sun");
+    }
+    if (columnIndex === 6) {
+      empty.classList.add("weekend-sat");
+    }
+    grid.appendChild(empty);
+  }
+
   return grid;
 }
 
-function buildWeeklyMobileList(reservations, startDate) {
+function buildWeeklyMobileList(reservations, startDate, currentUserId) {
   const start = new Date(startDate);
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(start);
@@ -278,6 +329,12 @@ function buildWeeklyMobileList(reservations, startDate) {
     }
     const group = document.createElement("div");
     group.className = "mobile-day";
+    if (day.getDay() === 0) {
+      group.classList.add("weekend-sun");
+    }
+    if (day.getDay() === 6) {
+      group.classList.add("weekend-sat");
+    }
     if (day.toDateString() === todayKey) {
       group.classList.add("today");
     }
@@ -290,7 +347,8 @@ function buildWeeklyMobileList(reservations, startDate) {
     list.className = "mobile-day-items";
     entries.forEach((entry) => {
       const item = document.createElement("div");
-      item.className = "mobile-item";
+      const isMine = currentUserId && entry.user_id === currentUserId;
+      item.className = `mobile-item${isMine ? " mine" : ""}`;
       item.innerHTML = `<strong>${entry.company_name}</strong><br />${formatTime(
         entry.start_at
       )}–${formatTime(entry.end_at)}`;
@@ -306,7 +364,7 @@ function buildWeeklyMobileList(reservations, startDate) {
   return container;
 }
 
-function buildMonthlyMobileList(days) {
+function buildMonthlyMobileList(days, currentUserId) {
   const container = document.createElement("div");
   container.className = "mobile-schedule";
   if (!days.length) {
@@ -319,12 +377,20 @@ function buildMonthlyMobileList(days) {
     }
     const group = document.createElement("div");
     group.className = "mobile-day";
+    const dayDate = new Date(day.date);
+    if (dayDate.getDay() === 0) {
+      group.classList.add("weekend-sun");
+    }
+    if (dayDate.getDay() === 6) {
+      group.classList.add("weekend-sat");
+    }
     group.innerHTML = `<div class="mobile-day-header">${day.date}</div>`;
     const list = document.createElement("div");
     list.className = "mobile-day-items";
     day.items.forEach((item) => {
       const entry = document.createElement("div");
-      entry.className = "mobile-item";
+      const isMine = currentUserId && item.user_id === currentUserId;
+      entry.className = `mobile-item${isMine ? " mine" : ""}`;
       entry.innerHTML = `<strong>${item.company_name}</strong><br />${formatTime(
         item.start_at
       )}–${formatTime(item.end_at)}`;
@@ -354,11 +420,13 @@ async function loadDashboard() {
   const monthlyData = await monthlyRes.json();
 
   const reservations = weeklyData.reservations || [];
+  const currentUser = JSON.parse(localStorage.getItem("user") || "null");
+  const currentUserId = currentUser?.id;
   weeklyView.innerHTML = "";
-  weeklyView.appendChild(buildWeeklyTable(reservations, weekStart));
+  weeklyView.appendChild(buildWeeklyTable(reservations, weekStart, currentUserId));
   if (weeklyMobile) {
     weeklyMobile.innerHTML = "";
-    weeklyMobile.appendChild(buildWeeklyMobileList(reservations, weekStart));
+    weeklyMobile.appendChild(buildWeeklyMobileList(reservations, weekStart, currentUserId));
   }
   if (weekRange) {
     weekRange.textContent = formatRangeLabel(weekStart);
@@ -366,11 +434,11 @@ async function loadDashboard() {
 
   monthlyView.innerHTML = "";
   monthlyView.appendChild(
-    buildMonthlyCalendar(buildMonthlyTable(monthlyData.days || []), monthStart)
+    buildMonthlyCalendar(buildMonthlyTable(monthlyData.days || []), monthStart, currentUserId)
   );
   if (monthlyMobile) {
     monthlyMobile.innerHTML = "";
-    monthlyMobile.appendChild(buildMonthlyMobileList(monthlyData.days || []));
+  monthlyMobile.appendChild(buildMonthlyMobileList(monthlyData.days || [], currentUserId));
   }
   if (monthRange) {
     monthRange.textContent = monthStart.toLocaleDateString("en-GB", {
